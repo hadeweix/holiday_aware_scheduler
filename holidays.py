@@ -36,3 +36,10 @@ HOLIDAYS_2025 = [
     datetime(2025, 10, 7),
     datetime(2025, 10, 8)
 ]
+LEAVE_IN_LIEU_2025 = [
+    datetime(2025, 1, 26),
+    datetime(2025, 2, 8),
+    datetime(2025, 4, 27),
+    datetime(2025, 9, 28),
+    datetime(2025, 10, 11)
+]

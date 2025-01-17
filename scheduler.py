@@ -1,17 +1,21 @@
 import importlib
-from datetime import datetime, timedelta
+from datetime import timedelta
+
 import pandas as pd
 from tabulate import tabulate
 
 
-# 动态加载节假日
+# 动态加载节假日和调休日
 def load_holidays():
     holidays = {}
     holidays_module = importlib.import_module("holidays")
     for attr in dir(holidays_module):
         if attr.startswith("HOLIDAYS_"):
             year = int(attr.split("_")[1])
-            holidays[year] = getattr(holidays_module, attr)
+            holidays[year] = {
+                "holidays": getattr(holidays_module, attr),
+                "leave_in_lieu": getattr(holidays_module, f"LEAVE_IN_LIEU_{year}", []),
+            }
     return holidays
 
 
@@ -20,15 +24,21 @@ ALL_HOLIDAYS = load_holidays()
 
 
 def get_holidays(year):
-    """根据年份获取节假日，若无数据直接抛出异常"""
+    """根据年份获取节假日和调休日，若无数据直接抛出异常"""
     if year not in ALL_HOLIDAYS:
-        raise ValueError(f"找不到 {year} 年的假期数据 请更新'holiday.py'")
+        raise ValueError(f"找不到 {year} 年的假期数据 请更新 'holidays.py'")
     return ALL_HOLIDAYS[year]
 
 
 def is_working_day(date):
-    """判断是否为工作日（非周末且非假期）"""
-    holidays = get_holidays(date.year)
+    """判断是否为工作日（非周末且非假期，或为调休）"""
+    holidays_data = get_holidays(date.year)
+    holidays = holidays_data["holidays"]
+    leave_in_lieu = holidays_data["leave_in_lieu"]
+
+    # 调休日优先级高于周末和节假日
+    if date in leave_in_lieu:
+        return True
     return date.weekday() < 5 and date not in holidays
 
 

@@ -4,7 +4,7 @@ from scheduler import schedule_tasks, display_schedule, save_schedule_to_csv
 
 try:
     # 配置任务和起始日期
-    tasks = [3, 4, 1, 1]  # 每个任务的工作量（工作日数）
+    tasks = [3, 4, 1, 1, 3, 4, 1, 13, 4, 1, 1, 3, 5, 6]  # 每个任务的工作量（工作日数）
     start_date = datetime.strptime("2025-04-02", "%Y-%m-%d")  # 起始日期
     # 调用调度函数
     schedule = schedule_tasks(tasks, start_date)
